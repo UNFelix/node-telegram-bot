@@ -1,3 +1,5 @@
+require('http').createServer((req, resp) => resp.end('bot is running'))
+  .listen(process.env.PORT || 3000, () => console.log('bot server started'))
 require('dotenv').config()
 var TelegramBot = require('node-telegram-bot-api');
 
