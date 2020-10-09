@@ -17,7 +17,7 @@ setInterval(() => {
   const date = new Date
   if (greenwich) date.setHours(date.getHours + 3)
   const hours = date.getHours()
-  const minutes = date.minutes()
+  const minutes = date.getMinutes()
   const time = `${hours<10? 0 : ''}${hours}:${minutes<10? 0 : ''}${minutes}`
   const dueNotes = notes.filter(note => note.time <= time)
   notes = notes.filter(note => !dueNotes.includes(note))
