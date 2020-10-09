@@ -10,7 +10,7 @@ let notes = [];
 
 bot.onText(/напомни (.+) в (.+)/, function (msg, match) {
     notes.push({ uid: msg.from.id, time: match[2], text:match[1] });
-    bot.sendMessage(msg.from.id, 'Постараюсь не забыть 😳😬😜');
+    bot.sendMessage(msg.from.id, 'Напомню, если не забуду 😳😜');
 });
 
 setInterval(() => {
