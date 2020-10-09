@@ -1,29 +1,26 @@
 require('http').createServer((req, resp) => resp.end('bot is running'))
   .listen(process.env.PORT || 3000, () => console.log('bot server started'))
 require('dotenv').config()
-var TelegramBot = require('node-telegram-bot-api');
 
-var token = process.env.TOKEN;
-var bot = new TelegramBot(token, {polling: true});
+const greenwich = !!process.env.PORT
+const TelegramBot = require('node-telegram-bot-api');
+const bot = new TelegramBot(process.env.TOKEN, {polling: true});
 
-var notes = [];
+let notes = [];
 
 bot.onText(/напомни (.+) в (.+)/, function (msg, match) {
-    var userId = msg.from.id;
-    var text = match[1];
-    var time = match[2];
-
-    notes.push({ 'uid': userId, 'time': time, 'text': text });
-
-    bot.sendMessage(userId, 'Отлично! Я обязательно напомню, если не сдохну :)');
+    notes.push({ uid: msg.from.id, time: match[2], text:match[1] });
+    bot.sendMessage(msg.from.id, 'Постараюсь не забыть');
 });
 
-setInterval(function(){
-    for (var i = 0; i < notes.length; i++) {
-    const curDate = new Date().getHours() + ':' + new Date().getMinutes();
-    if (notes[i]['time'] === curDate) {
-      bot.sendMessage(notes[i]['uid'], 'Напоминаю, что вы должны: '+ notes[i]['text'] + ' сейчас.');
-      notes.splice(i, 1);
-    }
-  }
+setInterval(() => {
+  const date = new Date
+  if (greenwich) date.setHours(date.getHours + 3)
+  const hours = date.getHours()
+  const minutes = date.minutes()
+  const time = `${hours<10? 0 : ''}${hours}:${minutes<10? 0 : ''}${minutes}`
+  const dueNotes = notes.filter(note => note.time <= time)
+  notes = notes.filter(note => !dueNotes.includes(note))
+  dueNotes.forEach(note =>
+    bot.sendMessage(note.uid, `Напоминаю, что вы должны: ${note.text}`))
 }, 1000);
