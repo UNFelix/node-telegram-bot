@@ -8,6 +8,12 @@ const bot = new TelegramBot(process.env.TOKEN, {polling: true});
 
 let notes = [];
 
+bot.on('polling_error', () => {
+  if (process.env.PORT) {
+    process.exit(1)
+  }
+})
+
 bot.onText(/напомни (.+) в (.+)/, function (msg, match) {
     notes.push({ uid: msg.from.id, time: match[2], text:match[1] });
     bot.sendMessage(msg.from.id, 'Напомню, если не забуду 😳😜');
