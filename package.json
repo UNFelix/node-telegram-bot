@@ -20,6 +20,7 @@
   "homepage": "https://github.com/UNFelix/node-telegram-bot#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "node-telegram-bot-api": "^0.50.0"
+    "node-telegram-bot-api": "^0.50.0",
+    "pg": "^8.4.1"
   }
 }

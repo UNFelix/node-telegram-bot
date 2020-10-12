@@ -1,0 +1,1 @@
+INSERT INTO notes (user_id, date_time) VALUES (449609352, '2016-06-22 21:10:25')

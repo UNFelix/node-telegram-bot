@@ -24,12 +24,12 @@ bot.onText(/напомни (.+) в (.+)/, function (msg, match) {
 setInterval(() => {
   const date = new Date
   if (greenwich) date.setHours(date.getHours + 3)
-  // const month = date.getMonth()
-  // const days = date.getDay()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
   const hours = date.getHours()
   const minutes = date.getMinutes()
-  // const time = `${month<10? 0 : ''}${month}.${days<10? 0 : ''}${days} ${hours<10? 0 : ''}${hours}:${minutes<10? 0 : ''}${minutes}`
-  const time = `${hours<10? 0 : ''}${hours}:${minutes<10? 0 : ''}${minutes}`
+  const time = `${month<10? 0 : ''}${month}.${day<10? 0 : ''}${day} ${hours<10? 0 : ''}${hours}:${minutes<10? 0 : ''}${minutes}`
+  // const time = `${hours<10? 0 : ''}${hours}:${minutes<10? 0 : ''}${minutes}`
   const dueNotes = notes.filter(note => note.time <= time)
   notes = notes.filter(note => !dueNotes.includes(note))
   dueNotes.forEach(note =>
@@ -46,3 +46,22 @@ function handleRequest(req, resp) {
     resp.end('404 Not Found')
   }
 }
+
+const { Client } = require('pg');
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+client.connect();
+
+client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
+  }
+  client.end();
+});
