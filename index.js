@@ -1,9 +1,11 @@
-require('http').createServer((req, resp) => resp.end('bot is running'))
+require('http').createServer(handleRequest)
   .listen(process.env.PORT || 3000, () => console.log('bot server started'))
 require('dotenv').config()
 
+const fs = require('fs')
 const greenwich = !!process.env.PORT
 const TelegramBot = require('node-telegram-bot-api');
+const { Recoverable } = require('repl');
 const bot = new TelegramBot(process.env.TOKEN, {polling: true});
 
 let notes = [];
@@ -33,3 +35,14 @@ setInterval(() => {
   dueNotes.forEach(note =>
     bot.sendMessage(note.uid, `Напоминаю, что вы должны: ${note.text}`))
 }, 1000);
+
+function handleRequest(req, resp) {
+  if (req.url == '/') {
+    req.url = '/index.html'
+  }
+  try {
+    resp.end(fs.readFileSync('./public' + req.url))
+  } catch (error) {
+    resp.end('404 Not Found')
+  }
+}
